@@ -44,4 +44,7 @@ cd scripts/
 
 ### Start Configurateur Tests
 ./Configurateur.sh
+
+### Start Evenement Tests
+./Evenement.sh
 ```
