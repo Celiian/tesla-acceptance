@@ -12,6 +12,8 @@ import org.openqa.selenium.JavascriptExecutor;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import static org.junit.Assert.*;
+
 
 
 import static org.hamcrest.Matchers.*;
@@ -36,6 +38,7 @@ public class ConfigurateurSteps {
         driver.get(arg1);
     }
 
+
     @Then("^Quand je clique sur le bouton commander je doit arriver sur la page \"([^\"]*)\"$")
     public void quand_je_clique_sur_le_bouton_commander_je_doit_arriver_sur_la_page(String arg1) throws Throwable {
         WebElement bouton = driver.findElement(By.cssSelector("a[title*=Commander]"));
@@ -53,6 +56,47 @@ public class ConfigurateurSteps {
             }
         }
     }
+
+
+    @Then("^Par défaut le prix affiché est un prix \"([^\"]*)\" à \"([^\"]*)\"$")
+    public void par_défaut_le_prix_affiché_est_un_prix_à(String arg1, String arg2) throws Throwable {
+        WebElement prixType = driver.findElement(By.cssSelector("span[class*='pricing-label']"));
+        WebElement prix = driver.findElement(By.cssSelector("span[class*='finance-type']"));
+        assertTrue(prixType.getText().contains(arg1));
+        assertTrue(prix.getText().contains(arg2));
+    }
+
+
+    @Then("^Quand je sélectionne l'option Capacité de conduite entièrement autonome, le prix augmente de \"([^\"]*)\"$")
+    public void quand_je_sélectionne_l_option_Capacité_de_conduite_entièrement_autonome_le_prix_augmente_de(String arg1) throws Throwable {
+        List<WebElement> allAjouter = driver.findElements(By.cssSelector("button[aria-label*='Ajouter cette option']"));
+        WebElement ajouter = driver.findElement(By.cssSelector("button[aria-label*='Ajouter cette option']"));
+
+        for (int i = 0; i < allAjouter.size(); i++) {
+            if (allAjouter.get(i).getAttribute("aria-label").contains("Capacité de conduite entièrement autonome")){
+                ajouter = allAjouter.get(i);
+            }
+        }
+        String prix = driver.findElement(By.cssSelector("span[class*='finance-type']")).getText();
+        ajouter.click();
+
+        prix = prix.replaceAll("[^\\d]", " ");
+        prix = prix.trim();
+        Float ancienPrix = Float.valueOf(prix.replaceAll(" ", "."));
+        prix = driver.findElement(By.cssSelector("span[class*='finance-type']")).getText();
+        prix = prix.replaceAll("[^\\d]", " ");
+        prix = prix.trim();
+        Float nouveauPrix = Float.valueOf(prix.replaceAll(" ", "."));
+
+        float soustraction = nouveauPrix - ancienPrix;
+        soustraction = soustraction * 100;
+        soustraction = Math.round(soustraction);
+        assertEquals(Integer.valueOf((int) (Float.valueOf(arg1) * 100)), Integer.valueOf((int) soustraction));
+    }
+
+
+
+
 
 
 
