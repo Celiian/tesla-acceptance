@@ -47,4 +47,7 @@ cd scripts/
 
 ### Start Evenement Tests
 ./Evenement.sh
+
+### Start Caractéristique Tests
+./Caracteristiques.sh
 ```
