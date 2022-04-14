@@ -10,7 +10,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.interactions.Actions;
 
+import javax.crypto.spec.PSource;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -53,6 +56,7 @@ public class EvenementSteps {
     @Then("^Lorsque je cherche un événement à \"([^\"]*)\" le premier résultat de recherche indique un événement localisé à \"([^\"]*)\"$")
     public void lorsque_je_cherche_un_événement_à_le_premier_résultat_de_recherche_indique_un_événement_localisé_à(String arg1, String arg2) throws Throwable {
         WebElement input = driver.findElement(By.cssSelector("input[name='geocode']"));
+        input.sendKeys("");
         input.clear();
         Thread.sleep(1000);
         input.sendKeys(arg1);
@@ -80,6 +84,7 @@ public class EvenementSteps {
     public void je_souhaite_m_inscrire_à_un_événement_qui_aura_lieu_en_France_je_fais_une_recherche_pour_la_puis_je_clic_sur_le_lien_Informations_d_un_événement_Je_suis_alors_redirigé_vers_la_page_de_l_événement(String arg1, String arg2, String arg3) throws Throwable {
 
         WebElement input = driver.findElement(By.cssSelector("input[name='geocode']"));
+        input.sendKeys("");
         input.clear();
         Thread.sleep(1000);
         input.sendKeys(arg1);
@@ -101,6 +106,121 @@ public class EvenementSteps {
             }
         }
     }
+
+
+
+    @Then("^Un formulaire d'inscription est disponible avec les champs \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" et un bouton d'envoi \"([^\"]*)\" Lorsque je remplis le formulaire sans l'email et que je le valide un message rouge apparait sous le champ de l'email indiquant \"([^\"]*)\"$")
+    public void un_formulaire_d_inscription_est_disponible_avec_les_champs_et_un_bouton_d_envoi_Lorsque_je_remplis_le_formulaire_sans_l_email_et_que_je_le_valide_un_message_rouge_apparait_sous_le_champ_de_l_email_indiquant(String arg1, String arg2, String arg3, String arg4, String arg5, String arg6, String arg7, String arg8, String arg9) throws Throwable {
+        List<WebElement> allLabel = driver.findElements(By.cssSelector("div[class*=form-item] label"));
+        String[] allArg = {arg1, arg2, arg3, arg4, arg5, arg6, arg7};
+        int nbChamps = 0;
+        for (int i = 0; i < allLabel.size(); i++) {
+            Actions actions = new Actions(driver);
+            actions.moveToElement(allLabel.get(i));
+            actions.perform();
+            switch (allLabel.get(i).getText()) {
+                case "Prénom *" -> {
+                    WebElement input = driver.findElement(By.cssSelector("div[class*=form-item] div input[name*='firstname']"));
+                    input.sendKeys(" ");
+                    input.clear();
+                    input.sendKeys("André");
+                    Thread.sleep(500);
+                }
+                case "Nom *" -> {
+                    WebElement input = driver.findElement(By.cssSelector("div[class*=form-item] div input[name*='lastname']"));
+                    input.sendKeys(" ");
+                    input.clear();
+                    input.sendKeys("Desousa");
+                    Thread.sleep(500);
+                }
+                case "Téléphone" -> {
+                    WebElement input = driver.findElement(By.cssSelector("div[class*=form-item] div input[name*='phonenumber']"));
+                    input.sendKeys(" ");
+                    input.clear();
+                    input.sendKeys("+33 06 73 82 91 01");
+                    Thread.sleep(500);
+                }
+                case "Code postal" -> {
+                    WebElement input = driver.findElement(By.cssSelector("div[class*=form-item] div input[name*='zipcode']"));
+                    input.sendKeys(" ");
+                    input.clear();
+                    input.sendKeys("75017");
+                    Thread.sleep(500);
+                }
+                case "Recevoir les News Tesla" -> {
+                    allLabel.get(i).click();
+                    Thread.sleep(1000);
+                }
+                default -> {
+                }
+            }
+            for (int j = 0; j < allArg.length; j++) {
+                if (allLabel.get(i).getText().contains(allArg[j])){
+                    nbChamps += 1;
+                }
+            }
+        }
+        WebElement button = driver.findElement(By.cssSelector("div[class*=action-btn] input[name*=ajax]"));
+        assertEquals(arg8, button.getAttribute("value"));
+        Actions actions = new Actions(driver);
+        actions.moveToElement(button);
+        actions.perform();
+        button.click();
+        assertEquals(7, nbChamps);
+
+        WebElement error = driver.findElement(By.cssSelector("ul[id*=parsley-id-89] li"));
+        assertEquals(arg9 ,error.getText());
+        assertEquals(error.getCssValue("color"), "rgba(183, 65, 52, 1)");
+
+
+    }
+
+    /*@Then("^Lorsque je remplis le formulaire sans l'email et que je le valide un message rouge apparait sous le champ de l'email indiquant \"([^\"]*)\"$")
+    public void lorsque_je_remplis_le_formulaire_sans_l_email_et_que_je_le_valide_un_message_rouge_apparait_sous_le_champ_de_l_email_indiquant(String arg1) throws Throwable {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollBy(0,800)", "");
+        Thread.sleep(2000);
+        List<WebElement> allLabel = driver.findElements(By.cssSelector("div[class*=form-item] label"));
+        List<WebElement> allInput = driver.findElements(By.cssSelector("div[class*=form-item] div input"));
+        for (int i = 0; i < allLabel.size(); i++) {
+            Actions actions = new Actions(driver);
+            actions.moveToElement(allLabel.get(i));
+            actions.perform();
+            System.out.println(i + " - label -" + allLabel.get(i).getText());
+        }
+
+        for (int i = 0; i < allLabel.size(); i++) {
+            switch (allLabel.get(i).getText()) {
+                case "Prénom * " -> {
+                    allInput.get(i).sendKeys(" ");
+                    allInput.get(i).clear();
+                    allInput.get(i).sendKeys("André");
+                }
+                case "Nom * " -> {
+                    allInput.get(i).sendKeys(" ");
+                    allInput.get(i).clear();
+                    allInput.get(i).sendKeys("Desousa");
+                }
+                case "Téléphone " -> {
+                    allInput.get(i).sendKeys(" ");
+                    allInput.get(i).clear();
+                    allInput.get(i).sendKeys("+33 06 73 82 91 01");
+                }
+                case "Code postal " -> {
+                    allInput.get(i).sendKeys(" ");
+                    allInput.get(i).clear();
+                    allInput.get(i).sendKeys("75017");
+                }
+                case "Recevoir les News Tesla " -> allLabel.get(i).click();
+                default -> {
+                }
+            }
+        }
+        WebElement button = driver.findElement(By.cssSelector("div[class*=action-btn] input"));
+        button.click();
+        Thread.sleep(10000);
+    }*/
+
 
 
 
