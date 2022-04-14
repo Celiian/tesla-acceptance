@@ -83,7 +83,6 @@ public class HomepageSteps {
 		menu.click();
 		WebElement lien = driver.findElement(By.cssSelector("ol[class*=nav-items--]"));
 		List<WebElement> liens = lien.findElements(By.cssSelector("li a"));
-		System.out.println("NUMBER :" + liens.size());
 		for (int i = 0; i < args.length; i++) {
 			assertEquals(args[i], liens.get(i).getAttribute("title"));
 		}
