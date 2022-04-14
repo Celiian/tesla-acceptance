@@ -1,7 +1,7 @@
 Feature: Configurateur Model S (https://www.tesla.com/fr_fr/model3)
   Scenario: Pouvoir commander une voiture configuré
     Given Je suis sur la page "https://www.tesla.com/fr_fr/model3"
-    Then Quand je clique sur le bouton commander je doit arriver sur la page "https://www.tesla.com/fr_fr/model3"
+    Then Quand je clique sur le bouton commander je doit arriver sur la page "https://www.tesla.com/fr_fr/model3/design"
     And Pour connaitre la liste des localisations de vente je vais en bas de la page puis je clique clique sur le bouton Locations qui doit m'amener sur la page "https://www.tesla.com/findus/list"
 
     Scenario: Pouvoir configurer une Tesla model 3 simple

@@ -28,23 +28,20 @@ source ~/.bash_profile ~/.zsh_profile
 
 ```
 
-## First of all, you need to compile your test class (from src folder)
+##Install Java 15 JDK
+```sh
+https://www.oracle.com/java/technologies/javase/jdk15-archive-downloads.html
+```
+
+## Then go to the Script Folder and run
 
 ```sh
 # Important, to avoid compile errors
-cd src/
+cd scripts/
 
-### Tests
-javac -d ../bin/ test/acceptance/Homepage*.java
+### Start HomePage Tests
+./HomePage.sh
+
+### Start Configurateur Tests
+./Configurateur.sh
 ```
-
-## Then run your test cases (from bin tests folder)
-
-```sh
-cd bin/
-java org.junit.runner.JUnitCore test.acceptance.HomepageTest
-```
-
-## Enjoy Agile Testing
-
-Thank you.
