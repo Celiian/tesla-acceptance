@@ -27,8 +27,6 @@ public class ConfigurateurSteps {
     public void beforeScenario() {
         System.setProperty("webdriver.chrome.driver","/Library/Java/JUNIT/chromedriver");
         driver = new ChromeDriver();
-        // Seems no more working in last Chrome versions
-        // driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
     }
 
@@ -93,6 +91,70 @@ public class ConfigurateurSteps {
         soustraction = Math.round(soustraction);
         assertEquals(Integer.valueOf((int) (Float.valueOf(arg1) * 100)), Integer.valueOf((int) soustraction));
     }
+
+
+
+
+    @Given("^Je suis sur la page \"([^\"]*)\" et je sélectionne le modèle \"([^\"]*)\"$")
+    public void je_suis_sur_la_page_et_je_sélectionne_le_modèle(String arg1, String arg2) throws Throwable {
+        driver.get(arg1);
+        List<WebElement> modeles = driver.findElements(By.cssSelector("p[class*='text-loader--content'] span"));
+        for (int i = 0; i < modeles.size(); i++) {
+            if (modeles.get(i).getText().equals(arg2)){
+                modeles.get(i).click();
+                i = modeles.size();
+                Thread.sleep(1000);
+            }
+        }
+    }
+
+
+    @Then("^Le prix en LOA passe à \"([^\"]*)\"$")
+    public void le_prix_en_LOA_passe_à(String arg1) throws Throwable {
+        String prix = driver.findElement(By.cssSelector("span[class*='finance-type']")).getText();
+        assertTrue(prix.contains(arg1));
+    }
+
+
+    @Then("^L'économie de carburant estimé passe à \"([^\"]*)\"$")
+    public void l_économie_de_carburant_estimé_passe_à(String arg1) throws Throwable {
+        List<WebElement> prix = driver.findElements(By.cssSelector("span[class*='finance-type']"));
+        boolean economieChange = false;
+        for (int i = 0; i < prix.size(); i++) {
+            if (prix.get(i).getText().contains(arg1)) {
+
+                String strPrix = prix.get(i).getText();
+                strPrix = strPrix.replaceAll("[^\\d]", " ");
+                strPrix = strPrix.trim();
+                if (strPrix.equals(arg1)) {
+                    economieChange = true;
+                    i = prix.size();
+                }
+            }
+        }
+        assertTrue(economieChange);
+    }
+
+
+    @Then("^Le montant total avec achat au terme du contrat de \"([^\"]*)\"$")
+    public void le_montant_total_avec_achat_au_terme_du_contrat_de(String arg1) throws Throwable {
+        WebElement bouton = driver.findElement(By.cssSelector("button[class*=odal-trigger] svg"));
+        bouton.click();
+
+        String montantLoa = driver.findElement(By.cssSelector("input[name=totalLeaseAmount]")).getAttribute("value");
+        montantLoa = montantLoa.replaceAll("[^\\d]", " ");
+        montantLoa = montantLoa.trim();
+        String strArg = arg1;
+        strArg = strArg.replaceAll("€", " ");
+        strArg = strArg.replaceAll("[^\\d]", " ");
+        strArg = strArg.trim();
+
+        assertEquals(strArg, montantLoa);
+
+    }
+
+
+
 
 
 

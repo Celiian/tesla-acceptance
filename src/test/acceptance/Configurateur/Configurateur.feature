@@ -17,6 +17,6 @@ Feature: Configurateur Model S (https://www.tesla.com/fr_fr/model3)
 
         Examples:
           | model | prix-loa | économie | total |
-          | Model 3 Performance | 541,16 € | 175 € | 71 426 € |
-          | Model 3 Grande Autonomie | 493,70 € | 175 € | 66 906 € |
+          | Model 3 Performance | 541,16 € | 175 | 71 426 |
+          | Model 3 Grande Autonomie | 493,70 € | 175 | 66 906 |
 
